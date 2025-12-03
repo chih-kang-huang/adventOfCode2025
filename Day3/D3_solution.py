@@ -18,7 +18,7 @@ res = 0
 with open("input.txt", "r") as f:
     for s in f:
         s = s.strip() # remove trailing lines
-        print(f"{maxJoltage(s)} and {s}")
+        # print(f"{maxJoltage(s)} and {s}")
         res += maxJoltage(s)
 
 print(res)
