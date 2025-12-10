@@ -4,54 +4,60 @@ def pressJoltage(joltage, button):
     for b in button: 
         joltage[b] -= 1
     return joltage
+def cancelPressJoltage(joltage, button): 
+    for b in button: 
+        joltage[b] += 1
+    return joltage
 def validButton(joltage, button):
     for b in button:
         if joltage[b] <= 0:
             return False
     return True
 
+from collections import deque
 
-
-def minimumPressesJoltage(joltageReq, buttons): 
+def minimumPressesJoltage(target, buttons): 
     """
-    using backtracking to find the minimum number of presses required
+    BFS
     ------
-    joltageReq = joltage current state
+    target
     buttons = list of buttons
     """
-    res = float("inf") 
+    # res = float("inf") 
     #print(f"Objective {objective} | buttons {buttons}")
+    target = tuple(target)
+    n = len(target)
 
-    def dfs(currJol, nb_press, i):
-        """ 
-        currJol = current joltage state
-        nb_press = number of presses
-        i = decistion at ith button
-        """
-        nonlocal res
-        if sum(currJol) == 0: 
-            res = min(res, nb_press)
-            return
-        if i == len(buttons): 
-            return
-        if validButton(currJol, buttons[i]):
-            currJol = pressJoltage(currJol, buttons[i]) # press the ith button
-            dfs(currJol, nb_press+1, i)
-            for b in buttons[i]: # backtracking
-                currJol[b] += 1
-            dfs(currJol, nb_press, i+1) # Not pressing the ith button
-        else: 
-            dfs(currJol, nb_press, i+1)
-    dfs(joltageReq, 0, 0)
-    return res
+    # BFS
+    start = tuple([0]*n)
+    queue = deque([(start, 0)])   # (state, number_of_presses)
+    visited = {start}
+
+    while queue:
+        state, nb_presses = queue.popleft()
+
+        if state == target:
+            return nb_presses  
+
+        # Try pressing each button
+        # for inc in incs:
+        for button in buttons :
+            new_state = tuple(state[i] + int(i in button) for i in range(n))
+            # prune: don't exceed target
+            if any(new_state[i] > target[i] for i in range(n)):
+                continue
+            if new_state not in visited:
+                visited.add(new_state)
+                queue.append((new_state, nb_presses + 1))
+
 
 
 # print(minimumPressesJoltage(
-#         [3, 5, 4, 7], [[3], [1,3], [2], [2, 3], [0, 2], [0, 1]]
-#         )
-#       )
+        # [3, 5, 4, 7], [[3], [1,3], [2], [2, 3], [0, 2], [0, 1]]
+        # )
+      # )
 count = 0
-with open("input.txt") as f: 
+with open("input_example.txt") as f: 
     for line in f: 
         line = ''.join(c for c in line if c not in "(){}<>[]'")
         line = line.strip().split(" ")
@@ -61,7 +67,6 @@ with open("input.txt") as f:
         buttons = [[int(b) for b in button ] for button in buttons]
         print(joltageReq, buttons)
         a= minimumPressesJoltage(joltageReq, buttons)
-        print(a)
         count += a
 
 print(count)
