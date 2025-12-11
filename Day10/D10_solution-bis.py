@@ -57,7 +57,7 @@ def minimumPressesJoltage(target, buttons):
         # )
       # )
 count = 0
-with open("input_example.txt") as f: 
+with open("input.txt") as f: 
     for line in f: 
         line = ''.join(c for c in line if c not in "(){}<>[]'")
         line = line.strip().split(" ")
