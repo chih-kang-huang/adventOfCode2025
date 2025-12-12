@@ -1,6 +1,7 @@
 
 
 
+totalsurfaces = 54-15
 
 def condition3x3(a, b, presentList): 
     # Assume all the present shapes or just 3x3 squares, check if it is possible to filled the regions of a x b
@@ -24,7 +25,13 @@ with open("input.txt") as f:
 count = 0
 
 for  a, b, presentList in regionList:
-    count += condition3x3(a,b,presentList)
+    if condition3x3(a, b, presentList):
+        count += 1
+    elif sum(presentList)*totalsurfaces > a*b: 
+        continue
+    else:
+        print("Undecidable yet")
+
 print(count)
 
 
